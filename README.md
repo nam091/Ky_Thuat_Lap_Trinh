@@ -2,11 +2,11 @@
 ## NGHIÊN CỨU IMAGE FORENSICS
 
 ### HOW TO RUN CODE?
-*Usage:*
+**Steganography**
 ```
 Python Steganography.py [-h] [-a] [-H] [-R] [-i INPUT] [-o OUTPUT] [-s SECRET] [-n NUMBER_OF_BITS] [-c COMPRESSION_LEVEL] [-p PASSWORD]
 ```
-**options:**
+options:*
 ```
 -h, --help            show this help message and exit
 -a, --analyze         Để phân tích ảnh
@@ -24,6 +24,23 @@ Python Steganography.py [-h] [-a] [-H] [-R] [-i INPUT] [-o OUTPUT] [-s SECRET] [
                       Cấp độ nén ảnh PNG (0-9)
 -p PASSWORD, --password PASSWORD
                       Mật khẩu để mã hóa dữ liệu
+```
+**StegaAnalysis**
+```
+Python StegaAnalysis.py [-h] [-C] [-A] [-Fs] [-org ORIGINAL] [-mod MODIFIED] [-o OUTPUT_PATH]
+```
+*Option*
+```
+-h, --help            show this help message and exit
+-C, --Compare         Để so sánh giữa ảnh gốc và ảnh đã ẩn
+-A, --Analysis        Phân tích mức độ entropy của lsb trong ảnh
+-Fs, --Struct_File    Kiểm tra cấu trúc file
+-org ORIGINAL, --original ORIGINAL
+                      Đường dẫn tới file gốc
+-mod MODIFIED, --modified MODIFIED
+                      Đường dẫn tới file đã bị chỉnh sửa
+-o OUTPUT_PATH, --output_path OUTPUT_PATH
+                      Đường dẫn đến thư mục lưu trữ -- default = Image_Output/
 ```
 
 ### TÍNH NĂNG

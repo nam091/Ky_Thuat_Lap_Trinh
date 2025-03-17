@@ -8,3 +8,4 @@ argparse==1.4.0
 numpy==1.26.4
 openCV-python==4.5.3
 cryptography==36.0.0
+matplotlib==3.5.1

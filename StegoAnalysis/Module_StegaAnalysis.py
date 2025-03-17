@@ -1,16 +1,8 @@
 import cv2
 import numpy as np
 import os
-import binascii
 import matplotlib.pyplot as plt
 from PIL import Image
-import lsb_lib.file_struct as fstruct
-
-
-
-
-
-
 
 def compare_images(image1_path, image2_path, conversion_mode, output_dir='Image_Output'):
     
@@ -90,22 +82,25 @@ def compare_images(image1_path, image2_path, conversion_mode, output_dir='Image_
     base1 = os.path.basename(image1_path)
     base2 = os.path.basename(image2_path)
     
-    cv2.imwrite(os.path.join(output_dir, f"{conversion_mode}_{base1}"), converted1)
-    cv2.imwrite(os.path.join(output_dir, f"{conversion_mode}_{base2}"), converted2)
+    converted_path_1 = os.path.join(output_dir, f"{conversion_mode}_{base1}")
+    cv2.imwrite(converted_path_1, converted1)
+    
+    converted_path_2 = os.path.join(output_dir, f"{conversion_mode}_{base2}")
+    cv2.imwrite(converted_path_2, converted2)
     
     # Tính toán độ tương đồng
     match_percentage = calculate_similarity(converted1, converted2)
     
     return match_percentage
 
-def analyse(original_image, Modified_image):
+def analyse(original_image, modified_image):
     BS = 100    # Block size
     img1 = Image.open(original_image)
-    img2 = Image.open(Modified_image)
+    img2 = Image.open(modified_image)
     (width1, height1) = img1.size
     (width2, height2) = img2.size
     print(f"[+] Image size {original_image}: {width1}x{height1} pixels.")
-    print(f"[+] Image size {Modified_image}: {width2}x{height2} pixels.")
+    print(f"[+] Image size {modified_image}: {width2}x{height2} pixels.")
     conv1 = img1.convert("RGBA")
     conv2 = img2.convert("RGBA")
 
@@ -174,34 +169,6 @@ def analyse(original_image, Modified_image):
     # Save the plot
     plot_path = os.path.join('LSB_Analysis', 'LSB_Analysis.png')
     os.makedirs('LSB_Analysis', exist_ok=True)
-    plt.savefig('./LSB_Analysis/LSB_Analysis.png')
+    plt.savefig(plot_path)
+    print(f"[+] Biểu đồ được lưu tại: {plot_path}")
     return plot_path, plt.show()
- 
-
-if __name__ == "__main__":
-# Test the image comparison function
-    original_image = "./img/CAT.jpg"
-    image2_path = "./img/CAT_encodeed.png"
-    image_change_path = "./img/img_in_img.gif"
-    gif_path = "./img/moon.gif"
-    
-    # similarity = compare_images(image1_path, image2_path, conversion_mode='delta')
-    # print(f"Similarity of delta is: {similarity:.2f}%")
-    
-    # similarity = compare_images(image1_path, image2_path, conversion_mode='rgb')
-    # print(f"Similarity of rgb is: {similarity:.2f}%")
-    print("=" * 50)
-    
-    # analysis_result = check_file_structure(image_change_path)
-    # print(f"File analysis result for {image_change_path}: " + "\n".join(f"{key}: {value}" for key, value in analysis_result.items()))
-    # print("-" * 50)
-    
-    # analysis_result = fstruct.ftypes(image2_path)
-    # print(f"File analysis result for {image2_path}: " + "\n".join(f"{key}: {value}" for key, value in analysis_result.items()))
-    
-    # image_bytes_analysis = analyze_image_bytes(image2_path)
-    # image_bytes_analysis2 = analyze_image_bytes(original_image)
-    # print(f"Image bytes analysis result for {image2_path}: \n" + "\n".join(f"{key}: {value:.2f}" for key, value in image_bytes_analysis.items()))
-    # print(f"Image bytes analysis result for {original_image}: \n" + "\n".join(f"{key}: {value:.2f}" for key, value in image_bytes_analysis2.items()))
-    plot_path, _ = analyse(original_image, image2_path)
-    print(f"LSB Analysis plot saved to: {plot_path}")
