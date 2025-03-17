@@ -26,8 +26,9 @@ Python Steganography.py [-h] [-a] [-H] [-R] [-i INPUT] [-o OUTPUT] [-s SECRET] [
                       Mật khẩu để mã hóa dữ liệu
 ```
 
-### SAMPLE
-
+### TÍNH NĂNG
+**HIDE**
+- Có thể nhúng các loại file: chuỗi, ảnh, văn bản, file nén
 
 ### KHÔNG THỂ CHẠY FILE?
 
