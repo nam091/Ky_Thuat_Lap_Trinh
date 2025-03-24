@@ -1,7 +1,8 @@
 import hashlib
-from Crypto import Random
-from Crypto.Cipher import AES
+import os
 import sys
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 
 class AESCipher:
 
@@ -12,15 +13,19 @@ class AESCipher:
     def encrypt_data(self, raw):
         raw_bytes = raw if isinstance(raw, bytes) else raw.encode() # Chuyển dữ liệu thành bytes
         raw_bytes = self._pad(raw_bytes) # Thêm padding cho dữ liệu để đủ kích thước khối
-        iv = Random.new().read(AES.block_size) # Tạo vector khởi tạo ngẫu nhiên
-        cipher = AES.new(self.key, AES.MODE_CBC, iv) # Tạo bản mã với khóa và iv
-        return iv + cipher.encrypt(raw_bytes) # Trả về dữ liệu đã mã hóa kèm iv dưới dạng bytes
+        iv = os.urandom(16) # Tạo vector khởi tạo ngẫu nhiên
+        cipher = Cipher(algorithms.AES(self.key), modes.CBC(iv), backend=default_backend())
+        encryptor = cipher.encryptor()
+        encrypted_data = encryptor.update(raw_bytes) + encryptor.finalize()
+        return iv + encrypted_data # Trả về dữ liệu đã mã hóa kèm iv dưới dạng bytes
 
     def decrypt_data(self, enc):
         try:
-            iv = enc[:AES.block_size] # Lấy iv từ dữ liệu mã hóa
-            cipher = AES.new(self.key, AES.MODE_CBC, iv) # Tạo bản giải mã với khóa và iv
-            decrypted = self._unpad(cipher.decrypt(enc[AES.block_size:])) # Giải mã dữ liệu và loại bỏ padding
+            iv = enc[:16] # Lấy iv từ dữ liệu mã hóa
+            cipher = Cipher(algorithms.AES(self.key), modes.CBC(iv), backend=default_backend())
+            decryptor = cipher.decryptor()
+            decrypted = decryptor.update(enc[16:]) + decryptor.finalize()
+            decrypted = self._unpad(decrypted) # Giải mã dữ liệu và loại bỏ padding
             return decrypted # Trả về dữ liệu đã giải mã dưới dạng bytes
         except (ValueError, KeyError) as e:
             print(f"Sai Mật khẩu hoặc dữ liệu bị hỏng:\n{str(e)}")
@@ -31,4 +36,7 @@ class AESCipher:
 
     @staticmethod
     def _unpad(s):
-        return s[:-s[-1]]
+        padding_value = s[-1]
+        if padding_value > 32:
+            return s  # No padding or invalid padding
+        return s[:-padding_value]

@@ -1,5 +1,7 @@
+import os
 from Module_StegaAnalysis import compare_images, analyse, show_pixel_examples
 from lsb_lib.file_struct import ftypes, read_exif_data
+from lsb_lib.Histogram import compare_histograms, plot_image_histogram, analyze_lsb_histogram
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
@@ -83,6 +85,45 @@ def gui():
         except Exception as e:
             messagebox.showerror("Lỗi", f"Error processing metadata: {str(e)}")
     
+    def histogram():
+        messagebox.showinfo("Hướng dẫn", "Chọn ảnh để phân tích.\n")
+        modified = filedialog.askopenfilename(title="Chọn ảnh", filetypes=[("Image files", "*.jpg *.jpeg *.png")])
+        if not modified:
+            return
+        out_name = os.path.splitext(os.path.basename(modified))[0] + "_histogram.png"
+        out_path = os.path.join("./Histogram_Output/", out_name)
+        plot_path, _ = plot_image_histogram(modified, out_path)
+        result_text.insert(tk.END, f"Biểu đồ được lưu tại: {plot_path}\n")
+
+    def compare_histogram():
+        messagebox.showinfo("Hướng dẫn", "Chọn ảnh gốc và ảnh đã chỉnh sửa để so sánh histogram.\n")
+        original = filedialog.askopenfilename(title="Chọn ảnh gốc", filetypes=[("Image files", "*.jpg *.jpeg *.png")])
+        if not original:
+            return
+        modified = filedialog.askopenfilename(title="Chọn ảnh đã chỉnh sửa", filetypes=[("Image files", "*.jpg *.jpeg *.png")])
+        if not modified:
+            return
+        out_path = os.path.join("./Histogram_Output/", "Compare_Histogram.png")
+        try:
+            plot_path, _ = compare_histograms(original, modified, out_path)
+            result_text.insert(tk.END, f"Biểu đồ so sánh được lưu tại: {plot_path}\n")
+        except Exception as e:
+            messagebox.showerror("Lỗi", str(e))
+
+    def anal_lsb_histogram():
+        messagebox.showinfo("Hướng dẫn", "Chọn ảnh để phân tích histogram LSB.\n")
+        modified = filedialog.askopenfilename(title="Chọn ảnh", filetypes=[("Image files", "*.jpg *.jpeg *.png")])
+        if not modified:
+            return
+        out_name = os.path.splitext(os.path.basename(modified))[0] + "_lsb_histogram.png"
+        out_path = os.path.join("./Histogram_Output/", out_name)
+        try:
+            plot_path, stats, _ = analyze_lsb_histogram(modified, out_path)
+            result_text.insert(tk.END, f"Biểu đồ LSB được lưu tại: {plot_path}\n")
+            result_text.insert(tk.END, f"Thống kê LSB: {stats}\n")
+        except Exception as e:
+            messagebox.showerror("Lỗi", str(e))
+    
     def clear_results():
         result_text.delete(1.0, tk.END)
     
@@ -100,7 +141,10 @@ def gui():
     tk.Button(button_frame, text="Kiểm tra cấu trúc", command=check_structure, width=15).grid(row=0, column=1, padx=5)
     tk.Button(button_frame, text="So sánh ảnh", command=run_compare, width=15).grid(row=0, column=2, padx=5)
     tk.Button(button_frame, text="Phân tích Entropy", command=run_analysis, width=15).grid(row=0, column=3, padx=5)
-    tk.Button(button_frame, text="Xóa kết quả", command=clear_results, width=15).grid(row=0, column=4, padx=5)
+    tk.Button(button_frame, text="Histogram", command=histogram, width=15).grid(row=0, column=4, padx=5)
+    tk.Button(button_frame, text="So sánh Histogram", command=compare_histogram, width=15).grid(row=0, column=5, padx=5)
+    tk.Button(button_frame, text="Histogram LSB", command=anal_lsb_histogram, width=15).grid(row=0, column=6, padx=5)
+    tk.Button(button_frame, text="Xóa kết quả", command=clear_results, width=15).grid(row=0, column=7, padx=5)
     # Khu vực hiển thị kết quả
     result_frame = tk.Frame(root)
     result_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)

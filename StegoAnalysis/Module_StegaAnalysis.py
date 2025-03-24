@@ -251,7 +251,3 @@ def analyse(original_image, modified_image):
     # plt.savefig(plot_path)
     print(f"[+] Biểu đồ được lưu tại: {plot_path}")
     return plot_path
-
-def run_anal(original_image_path, modified_image_path):
-    plot_path = analyse(original_image_path, modified_image_path)
-    return plot_path

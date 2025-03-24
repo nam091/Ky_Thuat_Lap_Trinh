@@ -13,7 +13,7 @@ def main():
     parser.add_argument('-o', '--output', help="Đường dẫn tới file output - Default: input_encoded.png")
     parser.add_argument('-s', '--secret', help="Đường dẫn tới file secret hoặc chuỗi tin nhắn", default=None)
     parser.add_argument('-n', '--number_of_bits', help="Số bits để chèn vào ảnh - Default: 1", default=1)
-    parser.add_argument('-c', '--compression_level', help="Cấp độ nén ảnh PNG (0-9) - Default: 1", default=1)
+    parser.add_argument('-c', '--compression_level', help="Cấp độ nén ảnh PNG (0-9) - Default: 1", default=0)
     parser.add_argument('-p', '--password', help="Mật khẩu để mã hóa dữ liệu - Default: None", default=None)
     args = parser.parse_args()
     
