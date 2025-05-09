@@ -28,6 +28,7 @@ def compare_images(image1_path, image2_path, conversion_mode, output_dir='Image_
         return delta
     
     
+    
     def convert_to_rgb(image):
         if len(image.shape) == 2:  # Chuyển đổi ảnh grayscale sang RGB
             return cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)

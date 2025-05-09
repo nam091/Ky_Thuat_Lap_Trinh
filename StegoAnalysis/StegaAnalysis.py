@@ -143,7 +143,6 @@ def gui():
     tk.Button(button_frame, text="Phân tích Entropy", command=run_analysis, width=15).grid(row=0, column=3, padx=5)
     tk.Button(button_frame, text="Histogram", command=histogram, width=15).grid(row=0, column=4, padx=5)
     tk.Button(button_frame, text="So sánh Histogram", command=compare_histogram, width=15).grid(row=0, column=5, padx=5)
-    tk.Button(button_frame, text="Histogram LSB", command=anal_lsb_histogram, width=15).grid(row=0, column=6, padx=5)
     tk.Button(button_frame, text="Xóa kết quả", command=clear_results, width=15).grid(row=0, column=7, padx=5)
     # Khu vực hiển thị kết quả
     result_frame = tk.Frame(root)

@@ -67,6 +67,7 @@ def Image_Steganography(action: int, input_image_path: str, output_path: str, se
         
         img = Image.open(imgFile) # Mở ảnh
         original_format = img.format  # Lưu định dạng gốc
+        exifdata = img.getexif()  # Lấy thông tin exif của ảnh
         if original_format not in ["PNG", "JPEG", "JPG"]:
             print("[-] Định dạng ảnh không hợp lệ. Chỉ hỗ trợ PNG và JPEG.")
             return
@@ -105,9 +106,8 @@ def Image_Steganography(action: int, input_image_path: str, output_path: str, se
             v.append(0)
 
         payload_size = len(v)
-        print("[+] Tổng số lượng bit của Payload: %.1f bits " % (payload_size))
         if (payload_size > max_bits_img):
-            print("[-] Không thể nhúng. Tệp quá lớn")
+            print(f"[-] Không thể nhúng. Dữ liệu cần nhúng quá lớn: {payload_size} bits")
             sys.exit()
         
         steg_img = Image.new("RGBA", (width, height)) # Tạo ảnh mới với kích thước và chế độ màu RGBA giống ảnh gốc
@@ -128,14 +128,14 @@ def Image_Steganography(action: int, input_image_path: str, output_path: str, se
             
         if ext in [".jpg", ".jpeg"]:
             steg_img = steg_img.convert("RGB")  # Chuyển đổi ảnh sang định dạng RGB
-            quality = 100 - min(compress_level * 10, 95)
+            quality = 100
             steg_img.save(output_path, format="JPEG", quality=quality)
         elif ext == ".png":
             if compress_level < 0 or compress_level > 9:
                 compress_level = 0
-            steg_img.save(output_path, optimize=True, format="PNG", compress_level=compress_level)
+            steg_img.save(output_path, optimize=False, format="PNG", compress_level=compress_level)
         else:
-            steg_img.save(output_path, optimize=True, format=original_format)
+            steg_img.save(output_path, optimize=False, format=original_format)
         size_of_steg_img = os.path.getsize(output_path)  # Lấy kích thước ảnh đã nhúng
         print(f"[+] Dung lượng ảnh đã lưu: {size_of_steg_img:.1f} Bytes")
         
@@ -146,14 +146,12 @@ def Image_Steganography(action: int, input_image_path: str, output_path: str, se
         print(f"[+] Đã lưu tại địa chỉ {output_path}")
         print("=" * 50)
         print("So sánh kích thước ảnh gốc và ảnh đã nhúng:")
-        print(f"[+] Kích thước ảnh gốc: {size_of_img:.1f} Bytes")
+        print(f"[+] Kích thước ảnh gốc:      {size_of_img:.1f} Bytes")
         print(f"[+] Kích thước ảnh đã nhúng: {size_of_steg_img:.1f} Bytes")
         print("-" * 50)
         print(f"[+] Kích thước lệch:    {size_of_steg_img - size_of_img:.1f} Bytes")
         print(f"[+] Kích thước payload: {size_of_payload:.1f} Bytes")
         
-
-
     def Recover(in_file, out_file, password):
     	# Process source image
         print("[+] Bắt đầu khôi phục ảnh...")
